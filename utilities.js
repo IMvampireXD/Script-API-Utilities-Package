@@ -8,18 +8,29 @@
  * And I just collected them into one script.
 */
 
-import { ContainerSlot, EquipmentSlot, EnchantmentType, ItemLockMode, ItemStack, PaletteColor, Player, world, system, BlockPermutation, ItemTypes } from "@minecraft/server";
+import { ContainerSlot, EquipmentSlot, EnchantmentType, ItemLockMode, ItemStack, PaletteColor, Player, world, system, BlockPermutation, ItemTypes, Vector3, Dimension, Block, GameMode } from "@minecraft/server";
 
 /**
- * A script that saves and loads full inventory
+ * A script that saves into a dynamic property and loads full inventory
  * Saves:
- * -Durability
- * -Enchantments
- * -Lore
- * -Nametags
- * -Lock mode
- * -Keep on death
- * -Amount
+ * - Durability
+ * - Enchantments
+ * - Lore
+ * - Nametags
+ * - Lock mode
+ * - Keep on death
+ * - Amount
+ * @author Remember M9
+ * @param {Player} player The player to save the inventory of
+ * @param {string} [invName=player.name] Identifier of the dynamic property
+ * @param {Player} storage The player to set the dynamic property on
+ * @returns {{items: string[], wornArmor: string[]}}
+ * @example
+ * import { world } from "@minecraft/server"
+ * 
+ * const player = world.getPlayers()[0];
+ * saveInventory(player);
+ * loadInventory(player);
  */
 function saveInventory(player, invName = player.name, storage = player) {
     let { container, inventorySize } = player.getComponent("inventory");
@@ -84,6 +95,17 @@ function saveInventory(player, invName = player.name, storage = player) {
 
 /**
  * Load the saved inventory 
+ * @author Remember M9
+ * @param {Player} player The player to load the inventory to.
+ * @param {string} [invName=player.name] Identifier of the dynamic property to load the items from
+ * @param {Player} storage The player to get the dynamic property from
+ * @returns {void}
+ * @example
+ * import { world } from "@minecraft/server"
+ * 
+ * const player = world.getPlayers()[0];
+ * saveInventory(player);
+ * loadInventory(player);
  */
 function loadInventory(player, invName = player.name, storage = player) {
     let { container, inventorySize } = player.getComponent("inventory");
@@ -132,7 +154,16 @@ function loadInventory(player, invName = player.name, storage = player) {
 }
 
 /**
- * Function to get a random number within range. 
+ * Function to get a random number between min and max.
+ * @remarks
+ * This can return a negative number if min is higher than max.
+ * @param {number} min
+ * @param {number} max
+ * @returns {number}
+ * @example
+ * import { world } from "@minecraft/server"
+ * 
+ * world.sendMessage(`${getRandomNumber(1, 10)}`);
  */
 function getRandomNumber(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min; 
@@ -140,6 +171,14 @@ function getRandomNumber(min, max) {
  
 /**
  * Gets the platform/device the player is using.
+ * @author Vyse
+ * @param {Player} player
+ * @returns {string}
+ * @example
+ * import { world } from "@minecraft/server"
+ * 
+ * const player = world.getPlayers()[0];
+ * getDevice(player);
  */
 function getDevice(player) {
     const { platformType, memoryTier, maxRenderDistance } = player.clientSystemInfo;
@@ -163,8 +202,26 @@ function getDevice(player) {
 }
 
 /**
- * move to a location using applyKnockback or applyImpulse
- */
+ * Move an entity to a location using applyKnockback or applyImpulse
+
+ * @author Coddy
+ * @param {Entity} entity The entity to move towards a location
+ * @param {Vector3} targetPos The location to move the entity to
+ * @param {number} speed The speed of moving the entity
+ * @returns {{x: number, z: number, strength: number, y: number} | {x: number, y: number, z: number}} Returns `{x, y, z}` if entity is not a player, otherwise returns `{ x, z, strength, y }`
+ * @example
+ * import { world } from "@minecraft/server"
+ * 
+ * const player = world.getPlayers()[0];
+ * const values = moveToLocation(player, { x: 10, y: 200, z: 5 }, 0.5);
+ * player.applyKnockback(values.x, values.z, values.strength, values.y);
+ * @example
+ * import { world } from "@minecraft/server"
+ * 
+ * const entity = world.getDimension("overworld").getEntities({ excludeTypes: ["minecraft:player"]})[0];
+ * const values = moveToLocation(entity, { x: 10, y: 200, z: 5 }, 0.5);
+ * entity.applyKnockback(values.x, values.z, values.strength, values.y);
+*/
 function moveToLocation(entity, targetPos, speed) {
     const pos = entity.location;
     const dx = targetPos.x - pos.x, dy = targetPos.y - pos.y, dz = targetPos.z - pos.z;
@@ -181,6 +238,14 @@ function moveToLocation(entity, targetPos, speed) {
 /**
  * Function to return boolean whether the player is underground or not
  * checks if player is in underground
+ * @author Serty
+ * @param {Player} player The player to test if they are underground
+ * @returns {boolean}
+ * @example
+ * import { world } from "@minecraft/server"
+ * 
+ * const player = world.getPlayers()[0];
+ * isUnderground(player);
  */
 function isUnderground(player) {
     if (player.dimension.heightRange.min > player.location.y) return true;
@@ -195,6 +260,16 @@ function isUnderground(player) {
     return true
 }
 
+/**
+ * @author Eon
+ * @param {Player} player The player to test if they are on surface
+ * @returns {boolean} 
+ * @example
+ * import { world } from "@minecraft/server"
+ * 
+ * const player = world.getPlayers()[0];
+ * isPlayerOnSurface(player);
+ */
 function isPlayerOnSurface(player) {
     const location = player.location;
     const blockBelow = player.dimension.getBlock(new Vec3(player.location.x, player.location.y, player.location.z).subtract({ x: 0, y: 1, z: 0 }));
@@ -215,8 +290,16 @@ function isPlayerOnSurface(player) {
     return false;
 }
 
-// MAKE SURE YOUR ITEM HAS THIS COMPONENT - "minecraft:liquid_clipped": true
-/** itemUseOn Event Example using this function:
+
+/**
+ * Function to place a block directly above water.
+ * @author GST378
+ * @remarks MAKE SURE YOUR ITEM HAS THIS COMPONENT - "minecraft:liquid_clipped": true
+ * @param {Player} player - The player placing the block.
+ * @param {BlockPermutation} permutationToPlace - The block permutation to be placed.
+ * @param {Vector3} location - The starting location to search for placement.
+ * @returns {Block | undefined} - Returns the placed block or undefined if no block was placed.
+ * @example
  * if (block.typeId !== 'minecraft:water') return;
  * if (itemStack.typeId === 'mc:example') {
  *  data.cancel = true;
@@ -224,14 +307,6 @@ function isPlayerOnSurface(player) {
  *      placeBlockAboveWater(source, BlockPermutation.resolve('minecraft:waterlily'), block.location);
  *   });
  *  }
- */
-/**
- * Function to place a block directly above water.
- * 
- * @param {Player} player - The player placing the block.
- * @param {BlockPermutation} permutationToPlace - The block permutation to be placed.
- * @param {Vector3} location - The starting location to search for placement.
- * @returns {Block | undefined} - Returns the placed block or undefined if no block was placed.
  */
 function placeBlockAboveWater(player, permutationToPlace, location) {
     for (let i = 0; i < 8; i++) {
@@ -252,9 +327,13 @@ function placeBlockAboveWater(player, permutationToPlace, location) {
     return player.dimension.getBlock(location);
 }
 
-// - Entities Section -
-
-// get the cardinal direction of player (east, west, north, south, up, down)
+/**
+ * Get the Cardinal direction of the player
+ * @author GST378
+ * @author finnafinest_
+ * @param {Player} player The player to get the Cardinal direction of
+ * @returns {"up"|"down"|"north"|"east"|"south"|"west"}
+ */
 function getCardinalDirection(player) {
     const yaw = player.getRotation().y;
     const pitch = player.getRotation().x;
@@ -268,10 +347,30 @@ function getCardinalDirection(player) {
 
 
 
+//======================================
+// ITEMS SECTION
+//======================================
 
-
-
-//Items Section -
+/**
+ * Spawn an item in a location.
+ * @param {Dimension} Dimension Dimension to spawn the item in
+ * @param {string} typeId typeId of the item to spawn
+ * @param {Vector3} location Location where to spawn the item
+ * @param {number} amount Amount of items to spawn
+ * @param {string} nameTag Nametag of the item
+ * @returns {void}
+ * @example
+ * import { world } from "@minecraft/server"
+ * 
+ * const dimension = world.getDimension("overworld");
+ * const location = {x: 0, y: 0, z: 0}
+ * 
+ * spawnItem(dimension, "minecraft:diamond", location, 64);
+ * @throws If the Dimension is not valid.
+ * @throws If the typeId is not a string.
+ * @throws If the amount is not a positive integer.
+ * @throws If the location is not valid.
+ */
 function spawnItem(Dimension, typeId, location, amount = 1, nameTag = null) {
     // Error Handling
     if (!Dimension || typeof Dimension.spawnItem !== "function") {
@@ -303,7 +402,28 @@ function spawnItem(Dimension, typeId, location, amount = 1, nameTag = null) {
         console.error("Error: Failed to spawn item.", error);
     }
 }
-//Blocks Section -
+
+
+
+
+
+//======================================
+// BLOCKS SECTION
+//======================================
+
+/**
+ * Breaks blocks from start block
+ * @param {Block} startBlock The block to start breaking from
+ * @param {number} volumeWidth The width of the volume
+ * @param {number} volumeHeight The height of the volume
+ * @param {number} volumeDepth The depth of the volume
+ * @param {string} replacementBlockType The block to replace the broken blocks with
+ * @example
+ * import { world, system } from "@minecraft/server"
+ * 
+ * const block = world.getDimension("overworld").getBlock({x: 0, y: 0, z: 0});
+ * breakBlocksFromStartBlock(block, 5, 5, 5, "stone"); // Fills a 5x5x5 cube with stone
+ */
 function breakBlocksFromStartBlock(startBlock, volumeWidth = 3, volumeHeight = 3, volumeDepth = 3, replacementBlockType = 'air') {
     const { brokenBlockPermutation, block, dimension } = startBlock;
     const typeId = brokenBlockPermutation.type.id;
@@ -330,7 +450,25 @@ function breakBlocksFromStartBlock(startBlock, volumeWidth = 3, volumeHeight = 3
         }
     }
 }
-//Events Section -
+
+
+
+
+//======================================
+// EVENTS SECTION
+//======================================
+
+
+/**
+ * Detects when a player shoots a projectile that hits another entity.
+ * @param {function({player: Player, target: Entity, projectile: string})} callBack A callback function to call when a player shoots a projectile and hits another entity.
+ * @param {Entity} [whom] An entity to watch for hits. If specified, the callback will only be called if the projectile hits this entity.
+ * @example
+ * import { world } from "@minecraft/server"
+ * detectPlayerShootsEvent((event) => {
+ *  console.log(`Player ${event.player.name} shot at ${event.target.name}`);
+ * });
+ */
 function detectPlayerShootsEvent(callBack, whom = null) {
     world.afterEvents.entitySpawn.subscribe(({ entity }) => {
         if (entity.typeId !== 'minecraft:arrow' && entity.typeId !== 'minecraft:trident')
@@ -355,6 +493,17 @@ function detectPlayerShootsEvent(callBack, whom = null) {
         });
     });
 }
+/**
+ * 
+ * @param {function({player: Player})} callBack 
+ * @example
+ * import { world } from "@minecraft/server"
+ * 
+ * const player = world.getPlayers()[0];
+ * detectDoubleJumpEvent((player) => {
+ *  console.log(`Player ${player.name} did a double jump!`);
+ * });
+ */
 function detectDoubleJumpEvent(callBack) {
     system.runInterval(() => {
         world.getAllPlayers().forEach(player => {
@@ -378,7 +527,25 @@ function detectDoubleJumpEvent(callBack) {
         });
     });
 }
-// isDoing Section
+
+
+//======================================
+// IsDoing SECTION
+//======================================
+
+/**
+ * Checks if a player is riding a specific entity type.
+ * @param {Player} player Player to check if riding an entity
+ * @param {string} entityType Type ID of the entity to check, example: "minecraft:horse"
+ * @returns {boolean}
+ * @example
+ * import { world } from "@minecraft/server"
+ * 
+ * const player = world.getPlayers()[0];
+ * const isRidingPlayer = isRidingEntity(player, "minecraft:horse");
+ * @throws If player is not a Player.
+ * @throws if Player doesn't have a `riding` component
+ */
 function isRidingEntity(player, entityType) {
     // Validate the player object
     if (!player || typeof player.getComponent !== 'function') {
@@ -396,6 +563,8 @@ function isRidingEntity(player, entityType) {
     // Compare the typeId of the entity being ridden with the provided entityType
     return riding.entityRidingOn.typeId === entityType;
 }
+
+
 /**
  * Checks if the player has a specified quantity of a certain item in their inventory.
  *
@@ -403,9 +572,14 @@ function isRidingEntity(player, entityType) {
  * @param {string} typeId - The typeId of the item to check for.
  * @param {number} required - The required quantity of the item.
  * @returns {boolean} - Returns true if the player has at least the required quantity of the item, false otherwise.
+ * @example
+ * import { world } from "@minecraft/server";
+ * 
+ * const player = world.getPlayers()[0];
+ * const hasDiamonds = isHavingItemQuantity(player, "minecraft:diamond", 5);
  */
 function isHavingItemQuantity(player, typeId, required) {
-    const inventoryComponent = player.getComponent(EntityInventoryComponent.componentId);
+    const inventoryComponent = player.getComponent("inventory");
     const container = inventoryComponent.container;
     if (container === undefined) {
         return false;
@@ -420,8 +594,42 @@ function isHavingItemQuantity(player, typeId, required) {
     }
     return total >= required;
 }
-const isCreative = (player) => player.runCommand("testfor @s[m=1]").successCount === 1;
-// transfer Propreties Section -
+
+/**
+ * Checks if player is creative
+ * @param {Player} player The player to check
+ * @returns {boolean}
+ * @example 
+ * import { world } from "@minecraft/server"
+ * 
+ * const player = world.getPlayers()[0];
+ * if (isCreative(player)) {
+ *  world.sendMessage(`${player.name} is in creative!`)
+ * };
+ */
+const isCreative = (player) => player.getGameMode() == GameMode.creative
+
+
+//======================================
+// TRANSFER PROPERTIES SECTION
+//======================================
+
+/**
+ * Transfer enchantments from an item to another
+ * @param {ItemStack} sourceItem Item to grab enchantments from
+ * @param {ItemStack} destinationItem Item to transfer enchantments to
+ * @returns {ItemStack}
+ * @example
+ * import { world } from "@minecraft/server"
+ * 
+ * const player = world.getPlayers()[0];
+ * const sourceItem = player.getComponent("inventory").container.getItem(0);
+ * const destinationItem = player.getComponent("inventory").container.getItem(1);
+ * const transferedEnchants = transferEnchantments(sourceItem, destinationItem);
+ * player.getComponent("inventory").container.setItem(1, transferedEnchants);
+ * @throws If sourceItem is not enchantable
+ * @throws If destinationItem is not enchantable
+ */
 function transferEnchantments(sourceItem, destinationItem) {
     const sourceEnchantable = sourceItem.getComponent("enchantable");
     if (!sourceEnchantable)
