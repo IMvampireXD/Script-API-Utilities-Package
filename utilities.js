@@ -20,7 +20,7 @@ import { ContainerSlot, EquipmentSlot, EnchantmentType, ItemLockMode, ItemStack,
  * - Lock mode
  * - Keep on death
  * - Amount
- * @author Remember M9
+ * @author trayeplays
  * @param {Player} player The player to save the inventory of
  * @param {string} [invName=player.name] Identifier of the dynamic property
  * @param {Player} storage The player to set the dynamic property on
@@ -95,7 +95,7 @@ function saveInventory(player, invName = player.name, storage = player) {
 
 /**
  * Load the saved inventory 
- * @author Remember M9
+ * @author trayeplays
  * @param {Player} player The player to load the inventory to.
  * @param {string} [invName=player.name] Identifier of the dynamic property to load the items from
  * @param {Player} storage The player to get the dynamic property from
