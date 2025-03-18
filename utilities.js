@@ -20,7 +20,7 @@ import { ContainerSlot, EquipmentSlot, EnchantmentType, ItemLockMode, ItemStack,
  * - Lock mode
  * - Keep on death
  * - Amount
- * @author trayeplays
+ * @author trayeplays & Remember M9
  * @param {Player} player The player to save the inventory of
  * @param {string} [invName=player.name] Identifier of the dynamic property
  * @param {Player} storage The player to set the dynamic property on
