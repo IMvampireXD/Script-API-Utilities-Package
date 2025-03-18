@@ -95,7 +95,7 @@ function saveInventory(player, invName = player.name, storage = player) {
 
 /**
  * Load the saved inventory 
- * @author trayeplays
+ * @author trayeplays & Remember M9
  * @param {Player} player The player to load the inventory to.
  * @param {string} [invName=player.name] Identifier of the dynamic property to load the items from
  * @param {Player} storage The player to get the dynamic property from
