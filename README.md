@@ -10,3 +10,10 @@ entity-utils.js:
 
 math-utils.js:
 - getRandomNumber (Returns a random number between min and max)
+
+# Usage
+Download the "utilities.js"
+and import the functions you need, in your script, like that:
+```js
+import { getRandomNumber, detectDoubleJump } from "./utilities.js"
+```
