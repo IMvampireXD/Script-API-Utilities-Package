@@ -280,7 +280,7 @@ function isPlayerOnSurface(player) {
 
 
 /**
- * Function to place a block directly above water.
+ * Function to place a block directly above water, replicating behaviour of vanilla lily pads.
  * @author GST378
  * @remarks MAKE SURE YOUR ITEM HAS THIS COMPONENT - "minecraft:liquid_clipped": true
  * @param {Player} player - The player placing the block.
