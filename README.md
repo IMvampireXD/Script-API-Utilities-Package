@@ -33,8 +33,8 @@ ItemStack-utilities.js:
 - isHavingItemQuantity (Returns true if the player has the specified amount of item in the inventory. Otherwise false.)
 
 # Usage
-Download the utlities files as your need.
-and import the functions you need, in your script, like this:
+Download the utlities.
+And import the functions as your need, in your script, like this:
 ```js
 import { getRandomNumber, detectDoubleJump } from "./utilities.js"
 ```
