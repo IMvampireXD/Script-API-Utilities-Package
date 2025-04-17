@@ -3,7 +3,7 @@ Useful functions for helping with creating scripts in Minecraft Bedrock Script A
 
 # List of functions:
 block-utils.js:
-- coming soon (im lazy ill put all later)
+- breakBlocksFromStartBlock (Breaks block from a starting block with provided width, height and depth)
 
 entity-utils.js:
 - coming soon (im lazy ill put all later)
