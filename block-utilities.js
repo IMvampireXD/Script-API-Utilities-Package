@@ -11,7 +11,7 @@
  * const block = world.getDimension("overworld").getBlock({x: 0, y: 0, z: 0});
  * breakBlocksFromStartBlock(block, 5, 5, 5, "stone"); // Fills a 5x5x5 cube with stone
  */
-function breakBlocksFromStartBlock(startBlock, volumeWidth = 3, volumeHeight = 3, volumeDepth = 3, replacementBlockType = 'air') {
+export function breakBlocksFromStartBlock(startBlock, volumeWidth = 3, volumeHeight = 3, volumeDepth = 3, replacementBlockType = 'air') {
     const { brokenBlockPermutation, block, dimension } = startBlock;
     const typeId = brokenBlockPermutation.type.id;
     const item = new ItemStack(typeId, 1);
