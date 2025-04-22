@@ -1,5 +1,5 @@
 // To-do list //
 
 - add more functions
-- divide all functions perfectly then remove utilities.js
-- last, but not least, make all class and move to static
+- divide all functions perfectly into categories then remove utilities.js
+- last, but not least, create classes for each category and move functions to static
