@@ -70,4 +70,26 @@ export class StringUtils {
             while (int >= v[i]) r += s[i], int -= v[i];
         return toLowerCase ? r.toLowerCase() : r;
     }
+
+    /**
+      * Gets the first letter of each words in string. 
+      * @author Remember M9
+      * @example 
+      * const initials = initialsOf('Minecraft §3§lBedrock§r 1 addons'); // output: 'MBA'
+      *  
+      * @param {string} text - String to get several words from
+      * @param {number} length - Max string length to return
+      */
+    static initialsOf(text = '', length = 3) {
+        const space = /\s+/g;
+        const post = /\s+|§./g;
+        const invalid = /\"|\\/;
+        let result = '';
+        if (invalid.test(text) || text.length > 30 || (text = text?.replace?.(post, ' ').trim() ?? '').split(space).join('').length < 4) {
+            throw new Error('Create a different Name!');
+        }
+        result = text.split(space).reduce((res, s) => res + s[0], '');
+        if (result.length <= 1) result += text.replace(space, '')[1];
+        return result.substring(0, length).toUpperCase();
+    }
 }
