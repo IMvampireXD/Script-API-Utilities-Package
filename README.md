@@ -1,10 +1,13 @@
 # Script-API-Utilities
 Useful functions for helping with creating scripts in Minecraft Bedrock Script API  
 
-# List of functions:
-block-utilities.js:
-- breakBlocksFromStartBlock (Breaks block from a starting block with provided width, height and depth)
-- placeBlockAboveWater (Function to place a block directly above water, replicating behaviour of lily pads.)
+## List of functions:
+
+### block-utilities.js:
+| Function | Description |
+|----------|-------------|
+| breakBlocksFromStartBlock | (Breaks block from a starting block with provided width, height and depth) |
+| placeBlockAboveWater | (Function to place a block directly above water, replicating behaviour of lily pads.) |
 
 entity-utilities.js:
 - getCardinalDirection (Gets the cardinal direction of an Entity - "up"|"down"|"north"|"east"|"south"|"west")
