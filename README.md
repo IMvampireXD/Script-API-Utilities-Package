@@ -1,4 +1,4 @@
-# Script-API-Utilities
+# Minecraft Bedrock Script API Utilities
 Useful functions for helping with creating scripts in Minecraft Bedrock Script API  
 
 ## List of functions:
@@ -33,17 +33,21 @@ Useful functions for helping with creating scripts in Minecraft Bedrock Script A
 ### math-utilities.js:
 | Function | Description |
 |----------|-------------|
-- getRandomNumber (Returns a random number between min and max)
+| getRandomNumber | Returns a random number between min and max |
+
+---
 
 ### ItemStack-utilities.js:
 | Function | Description |
 |----------|-------------|
-- saveInventory (Saves everything of Inventory into a dynamic property.)
-- loadInventory (Load the saved inventory.)
-- addEnchantment (Adds enchantment to an item.)
-- transferEnchantments (Transfer enchantments from an item to another.)
-- spawnItem (Spawn an item in a location.)
-- isHavingItemQuantity (Returns true if the player has the specified amount of item in the inventory. Otherwise false.)
+| saveInventory | Saves everything of Inventory into a dynamic property. |
+| loadInventory | Load the saved inventory. |
+| addEnchantment | Adds enchantment to an item. |
+| transferEnchantments | Transfer enchantments from an item to another. |
+| spawnItem | Spawn an item in a location. |
+| isHavingItemQuantity | Returns true if the player has the specified amount of item in the inventory. Otherwise false. |
+
+---
 
 # Usage
 Download the utlities.
