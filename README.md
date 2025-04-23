@@ -14,7 +14,7 @@ Useful functions for helping with creating scripts in Minecraft Bedrock Script A
 ### entity-utilities.js:
 | Function | Description |
 |----------|-------------|
-| getCardinalDirection | Gets the cardinal direction of an Entity - "up"|"down"|"north"|"east"|"south"|"west") |
+| getCardinalDirection | Gets the cardinal direction of an Entity - "up"/"down"/"north"/"east"/"south"/"west" |
 | isUnderground | Function to return boolean whether the player is underground or not. |
 | isPlayerOnSurface | Function to return boolean whether the player is on surface or not. |
 | moveToLocation | Moves the entity to specified location using applyKnockback or applyImpulse |
