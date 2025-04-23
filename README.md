@@ -6,30 +6,38 @@ Useful functions for helping with creating scripts in Minecraft Bedrock Script A
 ### block-utilities.js:
 | Function | Description |
 |----------|-------------|
-| `breakBlocksFromStartBlock` | Breaks block from a starting block with provided width, height and depth |
-| `placeBlockAboveWater` | Function to place a block directly above water, replicating behaviour of lily pads. |
+| breakBlocksFromStartBlock | Breaks block from a starting block with provided width, height and depth |
+| placeBlockAboveWater | Function to place a block directly above water, replicating behaviour of lily pads. |
 
 ---
 
-entity-utilities.js:
-- getCardinalDirection (Gets the cardinal direction of an Entity - "up"|"down"|"north"|"east"|"south"|"west")
-- isUnderground (Function to return boolean whether the player is underground or not.)
-- isPlayerOnSurface (Function to return boolean whether the player is on surface or not.)
-- moveToLocation (Moves the entity to specified location using applyKnockback or applyImpulse)
-- getDevice (Gets the platform/device the player is using.)
-- detectPlayerShootsEvent (Detects when a player shoots a projectile that hits another entity.)
-- detectDoubleJumpEvent (Detects when a player does a double jump.)
-- isRidingEntity (Checks if a player is riding a specific entity type.)
-- isCreative (Checks if player is in creative.)
-- isSurvival (Checks if the player is in survival.)
-- isPlayer (Checks if the entity is player or not.)
-- detectItemDrop (Fires an event if the player has dropped an item.)
-- detectPickingUpItem (Fires an event if the player has picked up an item.)
+### entity-utilities.js:
+| Function | Description |
+|----------|-------------|
+| getCardinalDirection | Gets the cardinal direction of an Entity - "up"|"down"|"north"|"east"|"south"|"west") |
+| isUnderground | Function to return boolean whether the player is underground or not. |
+| isPlayerOnSurface | Function to return boolean whether the player is on surface or not. |
+| moveToLocation | Moves the entity to specified location using applyKnockback or applyImpulse |
+| getDevice | Gets the platform/device the player is using. |
+| detectPlayerShootsEvent | Detects when a player shoots a projectile that hits another entity. |
+| detectDoubleJumpEvent | Detects when a player does a double jump. |
+| isRidingEntity | Checks if a player is riding a specific entity type. |
+| isCreative | Checks if player is in creative. |
+| isSurvival | Checks if the player is in survival. |
+| isPlayer | Checks if the entity is player or not. |
+| detectItemDrop | Fires an event if the player has dropped an item. |
+| detectPickingUpItem | Fires an event if the player has picked up an item. |
 
-math-utilities.js:
+---
+
+### math-utilities.js:
+| Function | Description |
+|----------|-------------|
 - getRandomNumber (Returns a random number between min and max)
 
-ItemStack-utilities.js:
+### ItemStack-utilities.js:
+| Function | Description |
+|----------|-------------|
 - saveInventory (Saves everything of Inventory into a dynamic property.)
 - loadInventory (Load the saved inventory.)
 - addEnchantment (Adds enchantment to an item.)
