@@ -92,4 +92,17 @@ export class StringUtils {
         if (result.length <= 1) result += text.replace(space, '')[1];
         return result.substring(0, length).toUpperCase();
     }
+
+    static formatNumber(number) {
+        const string = String(number);
+        let out = "";
+
+        for (let i = string.length - 1, j = 0; i >= 0; i--, j++) {
+            out = string[i] + out;
+            if ((j + 1) % 3 === 0 && i !== 0) {
+                out = ',' + out;
+            }
+        }
+        return out;
+    }
 }
