@@ -50,7 +50,7 @@ A library of helper functions to make Script API **easier.**
 ---
 
 # Usage Example
-Download the utlities.
+Download the utlities folder.
 And import the functions as your need, in your script, Example:
 ```js
 import { MathUtils } from "./utilities/math-utilities.js";
