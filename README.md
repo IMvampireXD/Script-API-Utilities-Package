@@ -1,6 +1,6 @@
 # Minecraft Bedrock Script API Utilities
 Useful functions for helping with creating scripts in Minecraft Bedrock Script API  
-
+A library of helper functions to make Script API **easier.**
 ## 📁 List of functions:
 
 ### block-utilities.js:
@@ -51,8 +51,25 @@ Useful functions for helping with creating scripts in Minecraft Bedrock Script A
 
 # Usage
 Download the utlities.
-And import the functions as your need, in your script, like this:
+And import the functions as your need, in your script, Example:
 ```js
-import { getRandomNumber } from "./math-utilities.js";
-import { saveInventory, loadInventory } from "./inventory-utilities.js"
+import { MathUtils } from "./utilities/math-utilities.js";
+import { InventoryUtils } from "./utilities/inventory-utilities.js";
+import { DimensionUtils } from "./utilities/dimension-utilities.js";
+import { CustomEvents } from "./utilities/custom-events.js";
+import { EntityUtils } from "./utilities/entity-utilities.js";
+
+console.warn( MathUtils.getRandomNumber(1, 5) ); //Returns random number between 1 and 5.
+
+const player = DimensionUtils.getPlayerByName("Steve"); // Get the player "Steve" by name, easily by using the library.
+
+// Check if the player is in Survival, easily by using the library.
+if (EntityUtils.isSurvival(player)) {
+  InventoryUtils.saveInventory(player); // Save the Inventory of the player, easily by using the library.
+}
+
+// Check if a player has dropped a Item, easily by using the library.
+CustomEvents.detectPlayerDropItem((event) => {
+  world.sendMessage(`§a${item.typeId}§r was dropped by §2${player.name}§r!`)
+})
 ```
