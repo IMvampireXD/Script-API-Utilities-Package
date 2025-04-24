@@ -76,7 +76,7 @@ if (EntityUtils.isSurvival(player)) {
 // Check if a player has dropped a Item, easily by using the library.
 CustomEvents.detectPlayerDropItem((event) => {
 
-  world.sendMessage(`§a${item.typeId}§r was dropped by §2${player.name}§r!`);
+  world.sendMessage(` ${item.typeId}§r was dropped by ${player.name} !`);
 
 })
 ```
