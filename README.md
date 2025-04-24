@@ -53,5 +53,6 @@ Useful functions for helping with creating scripts in Minecraft Bedrock Script A
 Download the utlities.
 And import the functions as your need, in your script, like this:
 ```js
-import { getRandomNumber, detectDoubleJump } from "./utilities.js"
+import { getRandomNumber } from "./math-utilities.js";
+import { saveInventory, loadInventory } from "./inventory-utilities.js"
 ```
