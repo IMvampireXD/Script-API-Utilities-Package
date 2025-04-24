@@ -59,17 +59,24 @@ import { DimensionUtils } from "./utilities/dimension-utilities.js";
 import { CustomEvents } from "./utilities/custom-events.js";
 import { EntityUtils } from "./utilities/entity-utilities.js";
 
-console.warn( MathUtils.getRandomNumber(1, 5) ); //Returns random number between 1 and 5.
+// Returns random number between 1 and 5.
+console.warn( MathUtils.getRandomNumber(1, 5) );
 
-const player = DimensionUtils.getPlayerByName("Steve"); // Get the player "Steve" by name, easily by using the library.
+// Get the player "Steve" by name, easily by using the library.
+const player = DimensionUtils.getPlayerByName("Steve");
 
 // Check if the player is in Survival, easily by using the library.
 if (EntityUtils.isSurvival(player)) {
-  InventoryUtils.saveInventory(player); // Save the Inventory of the player, easily by using the library.
+
+ // Save the Inventory of the player, easily by using the library.
+  InventoryUtils.saveInventory(player);
+
 }
 
 // Check if a player has dropped a Item, easily by using the library.
 CustomEvents.detectPlayerDropItem((event) => {
-  world.sendMessage(`§a${item.typeId}§r was dropped by §2${player.name}§r!`)
+
+  world.sendMessage(`§a${item.typeId}§r was dropped by §2${player.name}§r!`);
+
 })
 ```
