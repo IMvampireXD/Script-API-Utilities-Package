@@ -230,44 +230,6 @@ function isHavingItemQuantity(player, typeId, required) {
  */
 const isCreative = (player) => player.getGameMode() == GameMode.creative
 
-
-//======================================
-// TRANSFER PROPERTIES SECTION
-//======================================
-
-/**
- * Transfer enchantments from an item to another
- * @param {ItemStack} sourceItem Item to grab enchantments from
- * @param {ItemStack} destinationItem Item to transfer enchantments to
- * @returns {ItemStack}
- * @example
- * import { world } from "@minecraft/server"
- * 
- * const player = world.getPlayers()[0];
- * const sourceItem = player.getComponent("inventory").container.getItem(0);
- * const destinationItem = player.getComponent("inventory").container.getItem(1);
- * const transferedEnchants = transferEnchantments(sourceItem, destinationItem);
- * player.getComponent("inventory").container.setItem(1, transferedEnchants);
- * @throws If sourceItem is not enchantable
- * @throws If destinationItem is not enchantable
- */
-function transferEnchantments(sourceItem, destinationItem) {
-    const sourceEnchantable = sourceItem.getComponent("enchantable");
-    if (!sourceEnchantable)
-        throw new Error("Source item is not enchantable");
-    const destinationEnchantable = destinationItem.getComponent("enchantable");
-    if (!destinationEnchantable)
-        throw new Error("Destination item is not enchantable");
-    for (const enchantment of sourceEnchantable.getEnchantments()) {
-        if (!destinationEnchantable.canAddEnchantment(enchantment))
-            continue;
-        destinationEnchantable.addEnchantment(enchantment);
-    }
-    return destinationItem;
-}
-
-export { spawnItem, detectPlayerShootsEvent, detectDoubleJumpEvent, isRidingEntity, isHavingItemQuantity, isCreative, transferEnchantments, getCardinalDirection, breakBlocksFromStartBlock };
-
 export class Utility {
     /**
  * @param {Player} player
