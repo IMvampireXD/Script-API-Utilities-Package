@@ -133,42 +133,6 @@ function isPlayerOnSurface(player) {
 
 
 /**
- * Function to place a block directly above water.
- * @author GST378
- * @remarks MAKE SURE YOUR ITEM HAS THIS COMPONENT - "minecraft:liquid_clipped": true
- * @param {Player} player - The player placing the block.
- * @param {BlockPermutation} permutationToPlace - The block permutation to be placed.
- * @param {Vector3} location - The starting location to search for placement.
- * @returns {Block | undefined} - Returns the placed block or undefined if no block was placed.
- * @example
- * if (block.typeId !== 'minecraft:water') return;
- * if (itemStack.typeId === 'mc:example') {
- *  data.cancel = true;
- *   system.run(() => {
- *      placeBlockAboveWater(source, BlockPermutation.resolve('minecraft:waterlily'), block.location);
- *   });
- *  }
- */
-function placeBlockAboveWater(player, permutationToPlace, location) {
-    for (let i = 0; i < 8; i++) {
-        if (player.location.y < location.y) break;
-        const block = player.dimension.getBlock(location);
-        location.y++;
-        if (block.typeId === 'minecraft:water' || block.isWaterlogged) continue;
-        else if (!block.isAir) break;
-        else {
-            block.setPermutation(permutationToPlace);
-            const equippableComp = player.getComponent('equippable');
-            const item = equippableComp.getEquipment('Mainhand');
-            if (!item) break;
-            if (item.amount <= 1) equippableComp.setEquipment('Mainhand', null);
-            else { item.amount--; equippableComp.setEquipment('Mainhand', item); }
-        }
-    }
-    return player.dimension.getBlock(location);
-}
-
-/**
  * Get the Cardinal direction of the player
  * @author GST378
  * @author finnafinest_
@@ -185,82 +149,6 @@ function getCardinalDirection(player) {
     else if (yaw >= 135 || yaw < -135) return 'south';
     else return 'west';
 };
-
-
-//======================================
-// EVENTS SECTION
-//======================================
-
-
-/**
- * Detects when a player shoots a projectile that hits another entity.
- * @param {function({player: Player, target: Entity, projectile: string})} callBack A callback function to call when a player shoots a projectile and hits another entity.
- * @param {Entity} [whom] An entity to watch for hits. If specified, the callback will only be called if the projectile hits this entity.
- * @example
- * import { world } from "@minecraft/server"
- * detectPlayerShootsEvent((event) => {
- *  console.log(`Player ${event.player.name} shot at ${event.target.name}`);
- * });
- */
-function detectPlayerShootsEvent(callBack, whom = null) {
-    world.afterEvents.entitySpawn.subscribe(({ entity }) => {
-        if (entity.typeId !== 'minecraft:arrow' && entity.typeId !== 'minecraft:trident')
-            return;
-        const callback = world.afterEvents.projectileHitEntity.subscribe((arg) => {
-            const { source, projectile } = arg;
-            const hitInfo = arg.getEntityHit();
-            if (hitInfo?.entity && source instanceof Player && projectile === entity) {
-                const shooter = source; // Who shot the projectile
-                const target = hitInfo.entity; // Whom the projectile hit
-                const projectileType = projectile.typeId; // What was shot
-                // If 'whom' is specified, check if it matches the hit entity
-                if (whom && target !== whom)
-                    return;
-                // Call the developer's callback with detailed event data
-                callBack({ player: shooter, target: target, projectile: projectileType });
-                // Play a sound (default behavior)
-                shooter.playSound("random.orb", { volume: 0.4, pitch: 1.0 });
-                // Unsubscribe after detecting the hit
-                world.afterEvents.projectileHitEntity.unsubscribe(callback);
-            }
-        });
-    });
-}
-/**
- * 
- * @param {function({player: Player})} callBack 
- * @example
- * import { world } from "@minecraft/server"
- * 
- * const player = world.getPlayers()[0];
- * detectDoubleJumpEvent((player) => {
- *  console.log(`Player ${player.name} did a double jump!`);
- * });
- */
-function detectDoubleJumpEvent(callBack) {
-    system.runInterval(() => {
-        world.getAllPlayers().forEach(player => {
-            // Initialize jump tracking if not set
-            if (!player.hasOwnProperty("jumpCount"))
-                player.jumpCount = 0;
-            if (!player.hasOwnProperty("lastJumping"))
-                player.lastJumping = false;
-            // Reset jump count when touching the ground
-            if (player.isOnGround)
-                player.jumpCount = 0;
-            // Detect double jump: player jumps while airborne & wasn't jumping before
-            if (player.isJumping && !player.lastJumping && !player.isOnGround) {
-                player.jumpCount++;
-                if (player.jumpCount === 2) {
-                    callBack(player); // Execute developer's custom function
-                }
-            }
-            // Store last jumping state
-            player.lastJumping = player.isJumping;
-        });
-    });
-}
-
 
 //======================================
 // IsDoing SECTION
