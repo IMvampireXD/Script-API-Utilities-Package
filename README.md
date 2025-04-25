@@ -1,6 +1,6 @@
 # Minecraft Bedrock Script API Utilities
 Useful functions for helping with creating scripts in Minecraft Bedrock Script API  
-A library of helper functions to make Script API **easier.**
+"A library of helper functions to make Script API **easier.**"
 ## 📁 List of functions:
 
 ### block-utilities.js:
