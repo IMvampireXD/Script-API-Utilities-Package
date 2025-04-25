@@ -3,11 +3,20 @@ import { world, BlockPermutation, ItemStack, EquipmentSlot, system } from "@mine
 export class ItemStackUtils {
 
     /**
-      * @author GegaMC
-      * @description Determine if ItemStack is a type of block
-      * @param {ItemStack} itemStack
-      * @returns {Boolean}
-      */
+     * @author GegaMC
+     * @remarks Check if ItemStack is a block. For example, a minecraft:stone is a block, but minecraft:iron_shovel isn't.
+     * @param {ItemStack} itemStack
+     * @returns {Boolean}
+     * @example
+     * import { world } from "@minecraft/server";
+     * 
+     * world.afterEvents.itemUse.subcscribe((event)=>{
+     *     const { source, itemStack } = event;
+     *     if (isBlock(itemStack)) {
+     *         source.sendMessage("Im a placeable block!")
+     *     }
+     * })
+     */
     static isBlock(itemStack) {
         try {
             BlockPermutation.resolve(itemStack.typeId)
@@ -18,9 +27,18 @@ export class ItemStackUtils {
 
     /**
      * @author GegaMC
-     * @description Get an EquipmentSlot that this ItemStack can be put into.
+     * @remarks Retrieve the EquipmentSlot that this ItemStack can be worn into. For example, an iron chestplate will return "Chest", a totem of undying return "Offhand", whilst a diamond sword which can't be worn or offhanded will defaults to "Mainhand"
      * @param {ItemStack} itemStack
      * @returns {EquipmentSlot}
+     * @example
+     * import { world } from "@minecraft/server";
+     * 
+     * world.afterEvents.itemUse.subcscribe((event)=>{
+     *     const { source, itemStack } = event;
+     *     const equipmentSlot = getWearableSlot(itemStack);
+     *     
+     *     source.sendMessage(`This item is worn on the ${equipmentSlot} Slot`)
+     * })
      */
     static getWearableSlot(itemStack) {
         //sacrifice random player >:D
