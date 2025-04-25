@@ -74,4 +74,81 @@ export class CustomEvents {
         })
     }
     
+    /**
+      * Detects when a player shoots a projectile that hits another entity.
+      * 
+      * @param {function({player: Player, target: Entity, projectile: string})} callBack A callback function to call when a player shoots a projectile and hits another entity.
+      * @param {Entity} [whom] An entity to watch for hits. If specified, the callback will only be called if the projectile hits this entity.
+      * 
+      * @example
+      * import { world } from "@minecraft/server"
+      * 
+      * CustomEvents.detectPlayerShootsEvent((event) => {
+      *  console.log(`Player ${event.player.name} shot at ${event.target.name}`);
+      * });
+      * 
+      */
+    static detectPlayerShootsEvent(callBack, whom = null) {
+        world.afterEvents.entitySpawn.subscribe(({ entity }) => {
+            if (entity.typeId !== 'minecraft:arrow' && entity.typeId !== 'minecraft:trident')
+                return;
+            const callback = world.afterEvents.projectileHitEntity.subscribe((arg) => {
+                const { source, projectile } = arg;
+                const hitInfo = arg.getEntityHit();
+                if (hitInfo?.entity && source instanceof Player && projectile === entity) {
+                    const shooter = source; // Who shot the projectile
+                    const target = hitInfo.entity; // Whom the projectile hit
+                    const projectileType = projectile.typeId; // What was shot
+                    // If 'whom' is specified, check if it matches the hit entity
+                    if (whom && target !== whom)
+                        return;
+                    // Call the developer's callback with detailed event data
+                    callBack({ player: shooter, target: target, projectile: projectileType });
+                    // Play a sound (default behavior)
+                    shooter.playSound("random.orb", { volume: 0.4, pitch: 1.0 });
+                    // Unsubscribe after detecting the hit
+                    world.afterEvents.projectileHitEntity.unsubscribe(callback);
+                }
+            });
+        });
+    }
+    
+    /**
+     * Detects when a player does a double jump.
+     * 
+     * @param {function({player: Player})} callBack 
+     * 
+     * @example
+     * import { world } from "@minecraft/server"
+     * 
+     * const player = world.getPlayers()[0];
+     * CustomEvents.detectDoubleJumpEvent((player) => {
+     *  console.log(`Player ${player.name} did a double jump!`);
+     * });
+     * 
+     */
+    static detectDoubleJumpEvent(callBack) {
+        system.runInterval(() => {
+            world.getAllPlayers().forEach(player => {
+                // Initialize jump tracking if not set
+                if (!player.hasOwnProperty("jumpCount"))
+                    player.jumpCount = 0;
+                if (!player.hasOwnProperty("lastJumping"))
+                    player.lastJumping = false;
+                // Reset jump count when touching the ground
+                if (player.isOnGround)
+                    player.jumpCount = 0;
+                // Detect double jump: player jumps while airborne & wasn't jumping before
+                if (player.isJumping && !player.lastJumping && !player.isOnGround) {
+                    player.jumpCount++;
+                    if (player.jumpCount === 2) {
+                        callBack(player); // Execute developer's custom function
+                    }
+                }
+                // Store last jumping state
+                player.lastJumping = player.isJumping;
+            });
+        });
+    }
+
 }
