@@ -1,4 +1,62 @@
+import { Dimension, ItemStack, system, world } from "@minecraft/server";
+
 export class DimensionUtils {
+
+    /**
+      * Spawn an item in a location.
+      * 
+      * @param {Dimension} dimension - Dimension to spawn the item in
+      * @param {string} typeId - typeId of the item to spawn
+      * @param {Vector3} location - Location where to spawn the item
+      * @param {number} amount - Amount of items to spawn
+      * @param {string} nameTag - Nametag of the item
+      * @returns {void}
+      * 
+      * @throws If the dimension is not valid.
+      * @throws If the typeId is not a string.
+      * @throws If the amount is not a positive integer.
+      * @throws If the location is not valid.
+      * 
+      * @example
+      * import { world } from "@minecraft/server"
+      * 
+      * const dimension = world.getDimension("overworld");
+      * const location = {x: 0, y: 0, z: 0}
+      * 
+      * DimensionUtils.spawnItem(dimension, "minecraft:diamond", location, 64);
+      * 
+      */
+    static spawnItem(dimension, typeId, location, amount = 1, nameTag = null) {
+        // Error Handling
+        if (!dimension || typeof dimension.spawnItem !== "function") {
+            console.error("Error: Invalid Dimension object. Ensure it has a spawnItem method.");
+            return;
+        }
+        if (!typeId || typeof typeId !== "string") {
+            console.error("Error: Invalid typeId. It should be a non-empty string.");
+            return;
+        }
+        if (!Number.isInteger(amount) || amount <= 0) {
+            console.error("Error: Invalid amount. It should be a positive integer.");
+            return;
+        }
+        if (!location || typeof location !== "object") {
+            console.error("Error: Invalid location. It should be an object.");
+            return;
+        }
+        // Create the item
+        const item = new ItemStack(typeId, amount);
+        // Apply nameTag if provided
+        if (nameTag)
+            item.nameTag = nameTag;
+        // Spawn the item
+        try {
+            dimension.spawnItem(item, location);
+        }
+        catch (error) {
+            console.error("Error: Failed to spawn item.", error);
+        }
+    }
 
     /**
       * Gets a block from any dimension & location in world asynchronously (Even if the chunk is unloaded)
