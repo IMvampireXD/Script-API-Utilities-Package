@@ -88,4 +88,110 @@ export class DimensionUtils {
             })
         }
     };
+
+    /**
+      * @beta (Require Beta-API)
+      * @author GegaMC
+      * @description Get the approximate biome on a location. ( Underground biomes are supported. )
+      * @param {Vector3} location the location where it should check 
+      * @param {Dimension|string} dimension the dimension where it should check
+      * @throws Throws if the given dimension name or instance is invalid
+      * @returns {Promise<string>}
+      * @example
+      * import { world } from '@minecraft/server';
+      * 
+      * world.afterEvents.itemUse.subscribe(async(evd)=>{
+      *   if (evd.itemStack.typeId == "minecraft:stick") 
+      *       return testBiome(evd.source);
+      * })
+      * 
+      * async function testBiome(player) {
+      *   const biomeId = await DimensionUtils.getBiome(player.location,player.dimension)
+      *   player.sendMessage(`Youre inside: ${biomeId}`)
+      * }
+      */
+    static async getBiome(location,dimension) {
+        //Safeguard if using stable api when importing BiomeTypes
+        let biomeTypes = this.getBiome.biomeTypes;
+        if (!biomeTypes) {
+            const { BiomeTypes } = await import("@minecraft/server");
+            biomeTypes = BiomeTypes
+        }
+        if (!biomeTypes) throw Error("DimensionUtils.getDimension() Requires Beta API!")
+        if (!this.getBiome.biomeTypes)
+            this.getBiome.biomeTypes = biomeTypes
+
+        //the rest of the code
+        if (!(dimension instanceof Dimension))
+        if (typeof dimension == "string")
+            dimension = world.getDimension(dimension)
+        else throw Error("dimension is invalid.")
+        const allBiome = biomeTypes.getAll()
+        const height = dimension.heightRange;
+        const distance = (a,b) => {
+            const xyz = {
+                x: a.x - b.x,
+                y: a.y - b.y,
+                z: a.z - b.z
+            }
+            return Math.sqrt(xyz.x ** 2 + xyz.y ** 2 + xyz.z ** 2)
+        }
+        let priority = 0;
+        return new Promise(async(resolve)=>{
+            system.runJob((function *() {
+                let biomeFound = []
+                let baseBiome = [];
+                for (let i=0; i<allBiome.length; i++) {
+                    let bLoc1 = dimension.findClosestBiome({
+                        x: location.x,
+                        y: location.y+32,
+                        z: location.z
+                    },allBiome[i],{
+                        boundingSize: {
+                            x: 64,
+                            y: 64,
+                            z: 64
+                        }
+                    })
+    
+                    let bLoc2 = dimension.findClosestBiome({
+                        x: location.x,
+                        y: 224,
+                        z: location.z
+                    },allBiome[i],{
+                        boundingSize: {
+                            x: 64,
+                            y: 64,
+                            z: 64
+                        }
+                    })
+    
+                    if (bLoc2)
+                        baseBiome.push([allBiome[i].id,distance(bLoc2,location)])
+                    
+                    if (!bLoc1) { yield; continue;}
+                    const bLoc1Dist = distance({
+                        x: bLoc1.x,
+                        y: 0,
+                        z: bLoc1.z
+                    },{
+                        x: location.x,
+                        y: 0,
+                        z: location.z
+                    })
+                    
+                    if (!priority && !bLoc2) {
+                        priority = 1;
+                        biomeFound = []
+                    }
+                    if (priority ? !bLoc2 : bLoc2) {
+                        biomeFound.push([allBiome[i].id,bLoc1Dist])
+                    }
+                    yield
+                }
+                const biome = biomeFound.sort((a,b)=>a[1]-b[1])[0];
+                return resolve(biome[1] > 50 ? baseBiome[0] : biome[0])
+            })())
+        })
+    }
 }
