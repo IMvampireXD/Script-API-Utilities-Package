@@ -75,7 +75,7 @@ export class StringUtils {
       * Gets the first letter of each words in string. 
       * @author Remember M9
       * @example 
-      * const initials = initialsOf('Minecraft §3§lBedrock§r 1 addons'); // output: 'MBA'
+      * const initials = initialsOf('§3§lMinecraft Bedrock addons§r'); // output: 'MBA'
       *  
       * @param {string} text - String to get several words from
       * @param {number} length - Max string length to return
@@ -92,7 +92,16 @@ export class StringUtils {
         if (result.length <= 1) result += text.replace(space, '')[1];
         return result.substring(0, length).toUpperCase();
     }
-
+    /**
+     * Formats a given number by inserting commas as thousands separators.
+     *
+     * @param {number} number - The number to format.
+     * @returns {string} The formatted number as a string with commas.
+     *
+     * @example
+     * formatNumber(1234567); // Returns "1,234,567"
+     * 
+     */
     static formatNumber(number) {
         const string = String(number);
         let out = "";
