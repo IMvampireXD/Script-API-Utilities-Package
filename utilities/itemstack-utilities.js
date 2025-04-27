@@ -102,4 +102,57 @@ export class ItemStackUtils {
         })
         return slot
     }
+
+    /**
+      * @author GegaMC
+      * @description Get the item contents of an Item. For example, items inside a shulkerbox and bundles
+      * @param {ItemStack} itemStack
+      * @returns {ItemStack[]}
+      * @example
+      * import { world } from '@minecraft/server';
+      * 
+      * //Get shulker contents
+      * world.afterEvents.itemUse.subscribe((evd)=>{
+      * 	const player = evd.source;
+      *     if (evd.itemStack.typeId.endsWith("shulker_box")) {
+      * 		const itemStackContents = ItemStackUtils.getStoredItems(evd.itemStack)
+      * 		for (const itemStack of itemStackContents) {
+      * 			evd.source.sendMessage(`Shulkerbox has: ${itemStack.amount}x ${itemStack.typeId}`)
+      * 		}
+      *     }
+      * })
+      */
+    static getStoredItems(itemStack) {
+        const {dimension,location} = world.getPlayers()[0];
+        const height = dimension.heightRange;
+        const spawnLocation = {
+            ...location,
+            y: height.min
+        }
+
+        //Exclude existing item entity & Safeguard againts any hopper-like entities
+        const excludeEntity = dimension.getEntitiesAtBlockLocation(spawnLocation)
+        excludeEntity.forEach(e=>{
+            e.initialPos = e.location;
+            e.teleport({
+                ...e.location,
+                y: e.location.y + 5
+            })
+        })
+        dimension.spawnItem(itemStack,spawnLocation).applyDamage(5,{cause:"lava"})
+        excludeEntity.forEach(e=>{
+            e.teleport(e.initialPos)
+        })
+        return dimension.getEntitiesAtBlockLocation(spawnLocation).filter(e=>{
+            if (e.initialPos) {
+                delete e.initialPos
+                return;
+            } else return true;
+        })
+        .map((e,slot)=>{
+            const itemStack = e.getComponent("item").itemStack;
+            e.remove()
+            return itemStack
+        })
+    }
 }
