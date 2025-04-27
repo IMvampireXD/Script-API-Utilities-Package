@@ -1,4 +1,8 @@
-![Readme Banner](https://github.com/IMvampireXD/Script-API-Utilities/blob/d91b4c32c7309283fc92cd2dbc3df6a4492a6b25/assets/imgs/banner.png)
+<p align="center">
+<img src="/.github/assets/banner.png" alt="" width="1080" height="550">
+</p>
+
+---
 
 # Minecraft Bedrock Script API Utilities
 Useful functions for helping with creating scripts in Minecraft Bedrock Script API  
