@@ -1,3 +1,5 @@
+![Readme Banner](https://github.com/IMvampireXD/Script-API-Utilities/blob/d91b4c32c7309283fc92cd2dbc3df6a4492a6b25/assets/imgs/banner.png)
+
 # Minecraft Bedrock Script API Utilities
 Useful functions for helping with creating scripts in Minecraft Bedrock Script API  
 "A library of helper functions to make Script API **easier.**"
