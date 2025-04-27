@@ -100,9 +100,9 @@ export class DimensionUtils {
       * @example
       * import { world } from '@minecraft/server';
       * 
-      * world.afterEvents.itemUse.subscribe(async(evd)=>{
+      * world.afterEvents.itemUse.subscribe((evd)=>{
       *   if (evd.itemStack.typeId == "minecraft:stick") 
-      *       return testBiome(evd.source);
+      *       testBiome(evd.source);
       * })
       * 
       * async function testBiome(player) {
@@ -137,7 +137,7 @@ export class DimensionUtils {
             return Math.sqrt(xyz.x ** 2 + xyz.y ** 2 + xyz.z ** 2)
         }
         let priority = 0;
-        return new Promise(async(resolve)=>{
+        return new Promise((resolve)=>{
             system.runJob((function *() {
                 let biomeFound = []
                 let baseBiome = [];
@@ -156,7 +156,7 @@ export class DimensionUtils {
     
                     let bLoc2 = dimension.findClosestBiome({
                         x: location.x,
-                        y: 224,
+                        y: height.max,
                         z: location.z
                     },allBiome[i],{
                         boundingSize: {
@@ -189,8 +189,9 @@ export class DimensionUtils {
                     }
                     yield
                 }
+                baseBiome = baseBiome.sort((a,b)=>a[1]-b[1])[0];
                 const biome = biomeFound.sort((a,b)=>a[1]-b[1])[0];
-                return resolve(biome[1] > 50 ? baseBiome[0] : biome[0])
+                return resolve(biome[1] > 50 ? baseBiome : biome[0])
             })())
         })
     }
